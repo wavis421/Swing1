@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.FileFilter;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -64,12 +65,11 @@ public class MainFrame {
 			}
 		});
 
-		//frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
 		frame.add(toolbar, BorderLayout.SOUTH);
-		//frame.add(textPanel, BorderLayout.EAST);
+		//frame.add(textPanel, BorderLayout.CENTER);
 		frame.add(tablePanel, BorderLayout.CENTER);
 		frame.add(formPanel, BorderLayout.WEST);
 
@@ -93,6 +93,7 @@ public class MainFrame {
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		exitItem.setMnemonic(KeyEvent.VK_X);
 		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
+		importDataItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.CTRL_MASK));
 		
 		exitItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -105,15 +106,31 @@ public class MainFrame {
 		
 		importDataItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION)
-					System.out.println("Import filename = " + fileChooser.getSelectedFile());
+				if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+					try {
+						controller.loadFromFile(fileChooser.getSelectedFile());
+						tablePanel.refresh();
+						
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 			}
 		});
 
 		exportDataItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION)
-					System.out.println("Export filename = " + fileChooser.getSelectedFile());
+				if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
+					try {
+						controller.saveToFile(fileChooser.getSelectedFile());
+						tablePanel.refresh();
+						
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 			}
 		});
 		

@@ -17,7 +17,6 @@ public class PersonFileFilter extends FileFilter {
 			return false;
 
 		String ext = name.substring(index + 1, name.length());
-		System.out.println("Ext " + ext);
 		if (ext.equals("per"))
 			return true;
 
