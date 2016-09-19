@@ -48,6 +48,10 @@ public class Controller {
 		db.addPerson(person);
 	}
 	
+	public void removePerson (int row) {
+		db.removePerson (row);
+	}
+	
 	public List<Person> getPeople () {
 		return db.getPeople();
 	}

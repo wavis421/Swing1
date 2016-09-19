@@ -1,5 +1,9 @@
 package gui;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -7,7 +11,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -16,13 +19,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 public class FormPanel extends JPanel {
 
-	private JPanel formPanel;
 	private JLabel lblName, lblPhone, lblAnimal, lblFood, lblCitizen, lblSsn;
 	private JTextField textName, textPhone, textSSN;
 	private JList<selectItem> animalList;
@@ -34,18 +34,10 @@ public class FormPanel extends JPanel {
 	private FormListener formListener;
 
 	public FormPanel() {
-		// Create form panel size and borders
-		formPanel = new JPanel();
-		Border innerBorder = BorderFactory.createBevelBorder(BevelBorder.RAISED);
+		// Create borders
+		Border innerBorder = BorderFactory.createTitledBorder("Add Person");
 		Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
-		formPanel.setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
-
-		// Set up layout
-		GroupLayout layout = new GroupLayout(formPanel);
-		formPanel.setLayout(layout);
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
-		add(formPanel);
+		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
 		// Create labels, text fields, animal list, food combo box and submit button
 		lblName = new JLabel("Name:");
@@ -54,10 +46,10 @@ public class FormPanel extends JPanel {
 		lblFood = new JLabel("Fav Food:");
 		lblCitizen = new JLabel ("American Citizen: ");
 		lblSsn = new JLabel ("SSN: ");
-		textName = new JTextField();
-		textPhone = new JTextField();
+		textName = new JTextField(10);
+		textPhone = new JTextField(10);
 		americanCitizenCheck = new JCheckBox();
-		textSSN = new JTextField();
+		textSSN = new JTextField(10);
 		maleRadio = new JRadioButton("male");
 		femaleRadio = new JRadioButton("female");
 		genderGroup = new ButtonGroup();
@@ -103,63 +95,51 @@ public class FormPanel extends JPanel {
 			}
 		});
 		
-		setLayout(layout);
+		setFormLayout();
 	}
 
-	private void setLayout(GroupLayout layout) {
-		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-				.addGroup(layout.createSequentialGroup()   // label & text 
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-								.addComponent(lblName)
-								.addComponent(lblPhone))
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-								.addComponent(textName)
-								.addComponent(textPhone)))
-				.addGroup(layout.createSequentialGroup()   // animal
-						.addComponent(lblAnimal)
-						.addComponent(animalList))
-				.addGroup(layout.createSequentialGroup()   // food
-						.addComponent(lblFood)
-						.addComponent(foodCombo))
-				.addGroup(layout.createSequentialGroup()   // citizen check
-						.addComponent(lblCitizen)
-						.addComponent(americanCitizenCheck))
-				.addGroup(layout.createSequentialGroup()   // SSN
-						.addComponent(lblSsn)
-						.addComponent(textSSN))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(maleRadio)
-						.addComponent(femaleRadio))
-				.addGroup(layout.createSequentialGroup()   // submit
-						.addComponent(btnSubmit)));
-
-		layout.linkSize(SwingConstants.HORIZONTAL, lblName, lblPhone);
-
-		layout.setVerticalGroup(layout.createSequentialGroup()
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(lblName)
-						.addComponent(textName))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(lblPhone)
-						.addComponent(textPhone))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(lblAnimal)
-						.addComponent(animalList))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(lblFood)
-						.addComponent(foodCombo))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(lblCitizen)
-						.addComponent(americanCitizenCheck))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(lblSsn)
-						.addComponent(textSSN))
-				.addGroup(layout.createSequentialGroup()
-						.addComponent(maleRadio)
-						.addComponent(femaleRadio))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-						.addGap(60)
-						.addComponent(btnSubmit)));
+	private void addFormRow (GridBagConstraints gcon, JLabel lbl, Component value, int gridY) {
+		gcon.gridx = 0;
+		gcon.gridy = gridY;
+		gcon.anchor = GridBagConstraints.LINE_END;
+		add (lbl, gcon);
+		gcon.gridx++;
+		gcon.anchor = GridBagConstraints.LINE_START;
+		add (value, gcon);
+	}
+	
+	private void setFormLayout () {
+		int gridY = 0;
+		setLayout (new GridBagLayout());
+		GridBagConstraints gc = new GridBagConstraints();
+		gc.insets = new Insets (0,5,0,5);
+		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.fill = GridBagConstraints.NONE;
+		
+		addFormRow (gc, lblName, textName, gridY++);
+		addFormRow (gc, lblPhone, textPhone, gridY++);
+		addFormRow (gc, lblAnimal, animalList, gridY++);
+		addFormRow (gc, lblFood, foodCombo, gridY++);
+		addFormRow (gc, lblCitizen, americanCitizenCheck, gridY++);
+		addFormRow (gc, lblSsn, textSSN, gridY++);
+		
+		/* GENDER row (special handling) */
+		gc.gridx = 1;
+		gc.gridy = gridY++;
+		gc.anchor = GridBagConstraints.LINE_START;
+		add(maleRadio, gc);
+		gc.gridy = gridY++;
+		add(femaleRadio, gc);
+		
+		/* SUBMIT row (special handling) */
+		gc.weighty = 1;
+		gc.gridx = 1;
+		gc.gridy++;
+		gc.insets = new Insets(15,-30,0,0);
+		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		add(btnSubmit, gc);
 	}
 
 	private void createAnimalList() {
@@ -182,14 +162,6 @@ public class FormPanel extends JPanel {
 		foodCombo.setSelectedIndex(1);
 		foodCombo.setBorder(BorderFactory.createEtchedBorder());
 		foodCombo.setMaximumSize(new Dimension(foodCombo.getMaximumSize().width, lblName.getPreferredSize().height));
-	}
-
-	public String getName() {
-		return textName.getText();
-	}
-
-	public String getPhoneNum() {
-		return textPhone.getText();
 	}
 
 	public void setFormListener(FormListener listener) {
